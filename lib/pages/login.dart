@@ -15,36 +15,6 @@ import 'package:welcome2/api/host.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class PostState with ChangeNotifier {
-  LocalStorage storage = LocalStorage("usertoken");
-
-  Future<bool> loginNow(String username, String password) async {
-    print("in poststate");
-    try {
-      final url = Uri.parse(host + '/user/login/');
-      http.Response response = await http.post(
-        url,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: json.encode({
-          'username': username,
-          'password': password,
-        }),
-      );
-      var data = json.decode(response.body) as Map;
-      // print(data);
-      if (data.containsKey('token')) {
-        storage.setItem('token', data['token']);
-        return true;
-      }
-      return false;
-    } catch (e) {
-      return false;
-    }
-  }
-}
-
 class LoginPage extends StatefulWidget {
   static const routeName = '/login';
   const LoginPage({Key key}) : super(key: key);
@@ -81,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
     var data = json.decode(response.body) as Map;
     if (data.containsKey('token')) {
       storage.setItem('token', data['token']);
+      storage.setItem('username', username);
       return true;
     }
     return false;
@@ -225,20 +196,11 @@ class _LoginPageState extends State<LoginPage> {
                                   onPressed: () {
                                     // print('button pressed');
                                     //After successful login we will redirect to profile page. Let's create profile page now
-<<<<<<< HEAD
-                                    // _loginnow();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Homepage()),
-                                    );
-=======
                                     _loginnow();
                                     // Navigator.push(
                                     //     context,
                                     //     MaterialPageRoute(
                                     //         builder: (context) => Homepage()));
->>>>>>> 9b6c6f94d3b6b1fb674aff490bf24672cdba7b80
                                     // test();
                                   },
                                 ),

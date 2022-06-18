@@ -10,20 +10,6 @@ void main() {
 class MyApp extends StatelessWidget {
   Color _primaryColor = HexColor('#F89D29');
   Color _accentColor = HexColor('#F89D29');
-
-  // Design color
-  // Color _primaryColor= HexColor('#FFC867');
-  // Color _accentColor= HexColor('#FF3CBD');
-
-  // Our Logo Color
-  // Color _primaryColor= HexColor('#D44CF6');
-  // Color _accentColor= HexColor('#5E18C8');
-
-  // Our Logo Blue Color
-  //Color _primaryColor= HexColor('#651BD2');
-  //Color _accentColor= HexColor('#320181');
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

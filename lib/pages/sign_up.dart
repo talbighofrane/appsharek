@@ -4,7 +4,10 @@ import 'package:welcome2/common/theme_helper.dart';
 import 'package:welcome2/widgets/header_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
-
+import 'package:welcome2/pages/login.dart';
+import 'package:welcome2/api/host.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'profile_page.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -19,6 +22,73 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   bool checkedValue = false;
   bool checkboxValue = false;
+  String prenom;
+  String nom;
+  String email;
+  String tel;
+  String mdp;
+
+  Future signupNow() async {
+    final url = Uri.parse(host + '/apis/user/');
+    http.Response response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: json.encode({
+        'username': email,
+        'password': mdp,
+        'email': email,
+        'first_name': prenom,
+        'last_name': nom,
+        'phone': tel,
+        'group': 'user'
+      }),
+    );
+    var data = json.decode(response.body) as Map;
+    if (data.containsKey('message')) {
+      if (data['message'] == "added successfully") {
+        return true;
+      }
+      return false;
+    }
+    return false;
+    // } catch (e) {
+    //   return false;
+    // }
+  }
+
+  void sign_up() async {
+    var isvalid = _formKey.currentState.validate();
+    if (!isvalid) {
+      return;
+    }
+    _formKey.currentState.save();
+    bool isSignup = await signupNow();
+    if (isSignup) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Erreur de Saisie! Verifier les champs!"),
+            actions: [
+              RaisedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Ok"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +121,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               decoration: ThemeHelper().textInputDecoration(
                                   'Prénom*', 'Entrer votre prénom'),
                               keyboardType: TextInputType.name,
+                              onChanged: (v) {
+                                prenom = v;
+                              },
                               validator: (val) {
                                 if (val.isEmpty) {
                                   return "Entrer votre prénom";
@@ -69,6 +142,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               decoration: ThemeHelper().textInputDecoration(
                                   'Nom*', 'Entrer votre nom'),
                               keyboardType: TextInputType.name,
+                              onChanged: (v) {
+                                nom = v;
+                              },
                               validator: (val) {
                                 if (val.isEmpty) {
                                   return "Entrer votre nom";
@@ -86,6 +162,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   " Adresse E-mail* ",
                                   "Entrer votre adresse-mail"),
                               keyboardType: TextInputType.emailAddress,
+                              onChanged: (v) {
+                                email = v;
+                              },
                               validator: (val) {
                                 if (val.isEmpty) {
                                   return "champs obligatoire";
@@ -107,6 +186,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   "Numero de télephone*",
                                   "Entrer  votre numéro de télephone"),
                               keyboardType: TextInputType.number,
+                              onChanged: (v) {
+                                tel = v;
+                              },
                               validator: (val) {
                                 if (val.isEmpty) {
                                   return "Entrer  un numéro valide";
@@ -123,6 +205,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               obscureText: true,
                               decoration: ThemeHelper().textInputDecoration(
                                   "Mot de passe*", "Entrer votre mot de passe"),
+                              onChanged: (v) {
+                                mdp = v;
+                              },
                               validator: (val) {
                                 if (val.isEmpty) {
                                   return "Entrer un mot de passe";
@@ -194,10 +279,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               ),
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (context) => ProfilePage()),
-                                      (Route<dynamic> route) => false);
+                                  sign_up();
                                 }
                               },
                             ),

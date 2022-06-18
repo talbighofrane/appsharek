@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:welcome2/common/theme_helper.dart';
 
 import 'forgot_password_verification_page.dart';
-import 'login.dart';
 import '../widgets/header_widget.dart';
+import 'package:welcome2/pages/login.dart';
+import 'package:welcome2/api/host.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:localstorage/localstorage.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({Key key}) : super(key: key);
@@ -16,6 +20,68 @@ class ChangePasswordPage extends StatefulWidget {
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _formKey = GlobalKey<FormState>();
+  String oldpass;
+  String newpass;
+
+  Future editPassNow() async {
+    LocalStorage storage = LocalStorage("usertoken");
+    print(storage.getItem('username'));
+    print(oldpass);
+    print(newpass);
+    final url = Uri.parse(host + '/apis/user-profil/');
+    http.Response response = await http.put(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: json.encode({
+        'username': storage.getItem('username'),
+        'old_password': oldpass,
+        'new_password': newpass,
+      }),
+    );
+    print(response.body);
+    var data = json.decode(response.body) as Map;
+    if (data.containsKey('message')) {
+      if (data['message'] == "password updated") {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  void edit_pass() async {
+    var isvalid = _formKey.currentState.validate();
+    if (!isvalid) {
+      return;
+    }
+    _formKey.currentState.save();
+    bool isedited = await editPassNow();
+    if (isedited) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Erreur de Saisie! Verifier les champs!"),
+            actions: [
+              RaisedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Ok"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +136,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 decoration: ThemeHelper().textInputDecoration(
                                     "Mot de passe actuel*",
                                     "Entrer votre mot de passe actuel"),
+                                onChanged: (v) {
+                                  oldpass = v;
+                                },
                                 validator: (val) {
                                   if (val.isEmpty) {
                                     return "Entrer votre mot de passe";
@@ -87,6 +156,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 decoration: ThemeHelper().textInputDecoration(
                                     " Nouveau mot de passe *",
                                     "Entrer nouveau mot de passe "),
+                                onChanged: (v) {
+                                  newpass = v;
+                                },
                                 validator: (val) {
                                   if (val.isEmpty) {
                                     return "Entrer votre mot de passe";
@@ -134,12 +206,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 ),
                                 onPressed: () {
                                   if (_formKey.currentState.validate()) {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ForgotPasswordVerificationPage()),
-                                    );
+                                    // Navigator.pushReplacement(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //       builder: (context) =>
+                                    //           ForgotPasswordVerificationPage()),
+                                    // );
+                                    edit_pass();
                                   }
                                 },
                               ),
