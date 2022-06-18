@@ -1,13 +1,10 @@
-
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:welcome2/pages/login.dart';
 import 'package:welcome2/pages/splash_screen.dart';
 import 'package:welcome2/widgets/header_widget.dart';
 
-import 'forgot_password.dart';
+import 'modifierpass.dart';
 import 'forgot_password_verification_page.dart';
 import 'sign_up.dart';
 
@@ -27,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          " Page",
+          " Profil",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         elevation: 0.5,
@@ -47,33 +44,6 @@ class _ProfilePageState extends State<ProfilePage> {
             margin: EdgeInsets.only(
               top: 16,
               right: 16,
-            ),
-            child: Stack(
-              children: <Widget>[
-                Icon(Icons.notifications),
-                Positioned(
-                  right: 0,
-                  child: Container(
-                    padding: EdgeInsets.all(1),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    constraints: BoxConstraints(
-                      minWidth: 12,
-                      minHeight: 12,
-                    ),
-                    child: Text(
-                      '5',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 8,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-              ],
             ),
           )
         ],
@@ -110,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Container(
                   alignment: Alignment.bottomLeft,
                   child: Text(
-                    "Sharek",
+                    "Paramètres",
                     style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
@@ -186,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   color: Theme.of(context).accentColor,
                 ),
                 title: Text(
-                  'Forgot Password Page',
+                  'Changer Mot de passe',
                   style: TextStyle(
                       fontSize: _drawerFontSize,
                       color: Theme.of(context).accentColor),
@@ -195,7 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ForgotPasswordPage()),
+                        builder: (context) => ChangePasswordPage()),
                   );
                 },
               ),
@@ -251,10 +221,6 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Stack(
           children: [
             Container(
-              height: 100,
-              child: Header(100,  ),
-            ),
-            Container(
               alignment: Alignment.center,
               margin: EdgeInsets.fromLTRB(25, 10, 25, 10),
               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -264,7 +230,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
-                      border: Border.all(width: 5, color: Colors.white),
+                      border: Border.all(
+                          width: 5, color: Color.fromARGB(255, 255, 255, 255)),
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
@@ -317,7 +284,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Column(
                                   children: <Widget>[
                                     ...ListTile.divideTiles(
-                                      color: Colors.grey,
+                                      color: Color.fromARGB(255, 85, 84, 83),
                                       tiles: [
                                         ListTile(
                                           contentPadding: EdgeInsets.symmetric(

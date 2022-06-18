@@ -9,9 +9,9 @@ class Demande {
 
   String phone;
 
-  Demande(this.id, this.id_user, this.device_type, this.university, this.ville,
-      this.address, this.phone, this.description);
-  
+  Demande(this.id, this.id_user, this.device_type, this.description,
+      this.university, this.ville, this.address, this.phone);
+
   Demande.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     id_user = json['id_user'];
@@ -19,7 +19,6 @@ class Demande {
     address = json['address'];
     description = json['description'];
     phone = json['phone'];
-   ville= json['ville'];
-    
+    ville = json['ville'];
   }
 }

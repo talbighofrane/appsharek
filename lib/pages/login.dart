@@ -158,7 +158,12 @@ class _LoginPageState extends State<LoginPage> {
                                   onPressed: () {
                                     // print('button pressed');
                                     //After successful login we will redirect to profile page. Let's create profile page now
-                                    _loginnow();
+                                    // _loginnow();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Homepage()),
+                                    );
                                     // test();
                                   },
                                 ),

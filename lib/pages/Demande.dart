@@ -34,6 +34,14 @@ class DemandedState extends State<Demanded> {
 
   Future<String> addDemande(Demande demande) async {
     final url = Uri.parse(host + '/apis/demande/getall');
+    print(demande.id_user);
+    print(demande.device_type);
+    print(demande.description);
+    print(demande.university);
+    print(demande.ville);
+    print(demande.address);
+    print(demande.phone);
+    if (demande.phone.length > 8) print("over");
     final response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json;charset=UTF-8'
@@ -46,8 +54,9 @@ class DemandedState extends State<Demanded> {
           'ville': demande.ville,
           'address': demande.address,
           'phone': demande.phone,
+          'status': "en attente"
         }));
-
+    print(response.body);
     if (response.statusCode == 201) {
       print('add scusseful');
     }
@@ -63,8 +72,6 @@ class DemandedState extends State<Demanded> {
     print(demande.ville);
     print(demande.phone);*/
   }
-
-  
 
   List<Demande> data = [];
   Future<String> getallDemande() async {
