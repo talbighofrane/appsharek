@@ -10,7 +10,40 @@ import 'forgot_password.dart';
 import 'package:provider/provider.dart';
 import 'sign_up.dart';
 import '../widgets/header_widget.dart';
-import 'package:welcome2/pages/poststate.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:welcome2/api/host.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+class PostState with ChangeNotifier {
+  LocalStorage storage = LocalStorage("usertoken");
+
+  Future<bool> loginNow(String username, String password) async {
+    print("in poststate");
+    try {
+      final url = Uri.parse(host + '/user/login/');
+      http.Response response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode({
+          'username': username,
+          'password': password,
+        }),
+      );
+      var data = json.decode(response.body) as Map;
+      // print(data);
+      if (data.containsKey('token')) {
+        storage.setItem('token', data['token']);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+}
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/login';
@@ -29,6 +62,33 @@ class _LoginPageState extends State<LoginPage> {
     print('button pressed');
   }
 
+  Future loginNow(String username, String password) async {
+    LocalStorage storage = LocalStorage("usertoken");
+    print(username);
+    print(password);
+    // try {
+    final url = Uri.parse(host + '/apis/login/');
+    http.Response response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: json.encode({
+        'username': username,
+        'password': password,
+      }),
+    );
+    var data = json.decode(response.body) as Map;
+    if (data.containsKey('token')) {
+      storage.setItem('token', data['token']);
+      return true;
+    }
+    return false;
+    // } catch (e) {
+    //   return false;
+    // }
+  }
+
   void _loginnow() async {
     print('button pressed');
     var isvalid = _formKey.currentState.validate();
@@ -36,8 +96,9 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     _formKey.currentState.save();
-    bool islogin = await Provider.of<PostState>(context, listen: false)
-        .loginNow(_username, _password);
+    print(_formKey.toString());
+    bool islogin = await loginNow(_username, _password);
+    print(islogin);
     if (islogin) {
       Navigator.push(
         context,
@@ -48,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Somthing is Wrong!Try Again"),
+            title: Text("Nom D'utilisateur ou Mot de passe incorrect!"),
             actions: [
               RaisedButton(
                 onPressed: () {
@@ -99,6 +160,9 @@ class _LoginPageState extends State<LoginPage> {
                                 child: TextField(
                                   decoration: ThemeHelper().textInputDecoration(
                                       'Nom utilisateur', 'Entrer votre nom'),
+                                  onChanged: (v) {
+                                    _username = v;
+                                  },
                                 ),
                                 decoration:
                                     ThemeHelper().inputBoxDecorationShaddow(),
@@ -112,6 +176,9 @@ class _LoginPageState extends State<LoginPage> {
                                   decoration: ThemeHelper().textInputDecoration(
                                       'Mot de passe',
                                       'Entrer votre mot de passe'),
+                                  onChanged: (v) {
+                                    _password = v;
+                                  },
                                 ),
                                 decoration:
                                     ThemeHelper().inputBoxDecorationShaddow(),
@@ -158,12 +225,20 @@ class _LoginPageState extends State<LoginPage> {
                                   onPressed: () {
                                     // print('button pressed');
                                     //After successful login we will redirect to profile page. Let's create profile page now
+<<<<<<< HEAD
                                     // _loginnow();
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Homepage()),
                                     );
+=======
+                                    _loginnow();
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) => Homepage()));
+>>>>>>> 9b6c6f94d3b6b1fb674aff490bf24672cdba7b80
                                     // test();
                                   },
                                 ),
