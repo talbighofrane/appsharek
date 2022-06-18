@@ -7,7 +7,9 @@ import 'package:welcome2/api/host.dart';
 
 class PostState with ChangeNotifier {
   LocalStorage storage = LocalStorage("usertoken");
+
   Future<bool> loginNow(String username, String password) async {
+    print("in poststate");
     try {
       final url = Uri.parse(host + '/user/login/');
       http.Response response = await http.post(
@@ -24,7 +26,7 @@ class PostState with ChangeNotifier {
       // print(data);
       if (data.containsKey('token')) {
         storage.setItem('token', data['token']);
-       /* final String url = host + '/apis/profile/?token=' + data['token'];
+        /* final String url = host + '/apis/profile/?token=' + data['token'];
         final response = await http.get(url);
         List<Enseignant> datas = [];
         if (response.statusCode == 200) {

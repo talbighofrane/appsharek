@@ -33,7 +33,7 @@ class _HomepageState extends State<Homepage> {
               width: size.width,
               height: 65,
               child: Stack(
-                overflow: Overflow.visible,
+                // overflow: Overflow.visible,
                 children: [
                   CustomPaint(
                     size: Size(size.width, 80),
